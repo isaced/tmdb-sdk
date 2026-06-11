@@ -5,7 +5,7 @@
   "description": "A tiny, typed, zero-runtime-dependency TMDB SDK for Node.js, Bun, Deno, and edge runtimes.",
   "author": "isaced",
   "license": "MIT",
-  "homepage": "https://github.com/isaced/tmdb-sdk#readme",
+  "homepage": "https://github.com/isaced/tmdb-kit#readme",
   "keywords": [
     "tmdb",
     "themoviedb",
@@ -20,10 +20,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isaced/tmdb-sdk.git"
+    "url": "git+https://github.com/isaced/tmdb-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/isaced/tmdb-sdk/issues"
+    "url": "https://github.com/isaced/tmdb-kit/issues"
   },
   "sideEffects": false,
   "engines": {
@@ -59,6 +59,8 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "test": "vitest run",
+    "test:resources": "vitest run tests/resources",
+    "test:unit": "vitest run tests/unit",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",
