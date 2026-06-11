@@ -1,5 +1,5 @@
 {
-  "name": "tmdb-sdk",
+  "name": "tmdb-kit",
   "type": "module",
   "version": "0.1.0-beta.0",
   "description": "A tiny, typed, zero-runtime-dependency TMDB SDK for Node.js, Bun, Deno, and edge runtimes.",

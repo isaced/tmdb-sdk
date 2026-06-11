@@ -1,4 +1,4 @@
-# tmdb-sdk
+# tmdb-kit
 
 A tiny, typed, zero-runtime-dependency TMDB SDK for Node.js, Bun, Deno, and edge runtimes.
 
@@ -16,13 +16,13 @@ This package intentionally does not generate code from OpenAPI. It ships a small
 ## Install
 
 ```bash
-npm install tmdb-sdk
+npm install tmdb-kit
 ```
 
 ## Quick Start
 
 ```ts
-import { createTMDB } from 'tmdb-sdk'
+import { createTMDB } from 'tmdb-kit'
 
 const tmdb = createTMDB({
   accessToken: process.env.TMDB_ACCESS_TOKEN!,
@@ -40,7 +40,7 @@ const posterUrl = tmdb.images.url(movie.poster_path, 'w500')
 CommonJS:
 
 ```js
-const { createTMDB } = require('tmdb-sdk')
+const { createTMDB } = require('tmdb-kit')
 
 const tmdb = createTMDB({ accessToken: process.env.TMDB_ACCESS_TOKEN })
 ```
@@ -48,7 +48,7 @@ const tmdb = createTMDB({ accessToken: process.env.TMDB_ACCESS_TOKEN })
 Deno:
 
 ```ts
-import { createTMDB } from 'npm:tmdb-sdk'
+import { createTMDB } from 'npm:tmdb-kit'
 
 const tmdb = createTMDB({ accessToken: Deno.env.get('TMDB_ACCESS_TOKEN')! })
 ```
@@ -132,7 +132,7 @@ const response = await tmdb.request<{ results: unknown[] }>('/discover/movie', {
 ## Errors
 
 ```ts
-import { TMDBResponseError } from 'tmdb-sdk'
+import { TMDBResponseError } from 'tmdb-kit'
 
 try {
   await tmdb.movies.popular()
