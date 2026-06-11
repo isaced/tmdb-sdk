@@ -32,4 +32,6 @@ jobs:
         run: npm run ci
 
       - name: Publish package
-        run: npm publish --provenance --access public
+        run: |
+          TAG=$(node -e "const v=require('./package.json').version; const m=v.match(/-([a-z]+)/); console.log(m?m[1]:'latest')")
+          npm publish --provenance --access public --tag "$TAG"
