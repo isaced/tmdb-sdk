@@ -131,6 +131,64 @@ export interface SeasonSummary {
   vote_average: number
 }
 
+export interface EpisodeGuestStar {
+  adult: boolean
+  character: string
+  credit_id: string
+  gender: number | null
+  id: number
+  known_for_department: string
+  name: string
+  order: number
+  original_name: string
+  popularity: number
+  profile_path: string | null
+}
+
+export interface EpisodeSummary {
+  air_date: TMDBDateString | null
+  crew: CreditCrewMember[]
+  episode_number: number
+  episode_type: string
+  guest_stars: EpisodeGuestStar[]
+  id: number
+  name: string
+  overview: string
+  production_code: string | null
+  runtime: number | null
+  season_number: number
+  show_id: number
+  still_path: string | null
+  vote_average: number
+  vote_count: number
+}
+
+export interface TVSeasonDetails {
+  _id: string
+  air_date: TMDBDateString | null
+  episodes: EpisodeSummary[]
+  id: number
+  name: string
+  overview: string
+  poster_path: string | null
+  season_number: number
+  vote_average: number
+}
+
+export type TVSeasonAppendToResponse =
+  | 'account_states'
+  | 'aggregate_credits'
+  | 'credits'
+  | 'external_ids'
+  | 'images'
+  | 'translations'
+  | 'videos'
+  | (string & {})
+
+export interface TVSeasonDetailsOptions extends LanguageOptions {
+  appendToResponse?: TVSeasonAppendToResponse | readonly TVSeasonAppendToResponse[]
+}
+
 export interface TVDetails extends Omit<TVSummary, 'genre_ids'> {
   created_by: CreatedBy[]
   episode_run_time: number[]

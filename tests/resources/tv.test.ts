@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { createTMDB } from '../../src'
 import { expectPaths, expectRequest } from '../_support/assertions'
-import { creditsResponse, imagesResponse, paged, tvDetails, videosResponse } from '../_support/fixtures'
+import { creditsResponse, imagesResponse, paged, seasonDetails, tvDetails, videosResponse } from '../_support/fixtures'
 import { createFetchMock } from '../_support/fetch'
 
 describe('TVResource', () => {
@@ -102,6 +102,43 @@ describe('TVResource', () => {
 
     expect(() => tmdb.tv.details(0)).toThrow('seriesId must be a positive integer')
     expect(() => tmdb.tv.videos(Number.NaN)).toThrow('seriesId must be a positive integer')
+    expect(mock.calls).toHaveLength(0)
+  })
+
+  it('maps season details endpoint', async () => {
+    const mock = createFetchMock(
+      { body: seasonDetails },
+      { body: seasonDetails },
+    )
+    const tmdb = createTMDB({ accessToken: 'read-token', fetch: mock.fetch })
+
+    await tmdb.tv.seasonDetails(1399, 1)
+    await tmdb.tv.seasonDetails(1399, 1, { appendToResponse: 'credits', language: 'zh-CN' })
+
+    expectPaths(mock.calls, [
+      '/3/tv/1399/season/1',
+      '/3/tv/1399/season/1',
+    ])
+    expectRequest(mock.calls[0]!, {
+      path: '/3/tv/1399/season/1',
+      query: {},
+    })
+    expectRequest(mock.calls[1]!, {
+      path: '/3/tv/1399/season/1',
+      query: {
+        append_to_response: 'credits',
+        language: 'zh-CN',
+      },
+    })
+  })
+
+  it('rejects invalid season numbers before a request is made', () => {
+    const mock = createFetchMock()
+    const tmdb = createTMDB({ accessToken: 'read-token', fetch: mock.fetch })
+
+    expect(() => tmdb.tv.seasonDetails(1399, 0)).toThrow('seasonNumber must be a positive integer')
+    expect(() => tmdb.tv.seasonDetails(1399, -1)).toThrow('seasonNumber must be a positive integer')
+    expect(() => tmdb.tv.seasonDetails(0, 1)).toThrow('seriesId must be a positive integer')
     expect(mock.calls).toHaveLength(0)
   })
 })

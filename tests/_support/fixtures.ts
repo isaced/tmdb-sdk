@@ -4,6 +4,7 @@ import type {
   GenresResponse,
   ImagesResponse,
   PagedResponse,
+  TVSeasonDetails,
   VideosResponse,
 } from '../../src'
 
@@ -63,4 +64,34 @@ export const configurationResponse: Configuration = {
     secure_base_url: 'https://image.tmdb.org/t/p/',
     still_sizes: [],
   },
+}
+
+export const seasonDetails: TVSeasonDetails = {
+  _id: '5256c89f19c2956ff6046d47',
+  air_date: '2011-04-17',
+  episodes: [
+    {
+      air_date: '2011-04-17',
+      crew: [],
+      episode_number: 1,
+      episode_type: 'standard',
+      guest_stars: [],
+      id: 63056,
+      name: 'Winter Is Coming',
+      overview: 'Eddard Stark is...',
+      production_code: '101',
+      runtime: 62,
+      season_number: 1,
+      show_id: 1399,
+      still_path: '/xY0qPqYrmC8alSSsBG8A5N4G1B.jpg',
+      vote_average: 7.9,
+      vote_count: 350,
+    },
+  ],
+  id: 3624,
+  name: 'Season 1',
+  overview: 'Trouble is brewing in the Seven Kingdoms of Westeros.',
+  poster_path: '/kMTkQkQnFmHmBYyBz5dTFaXGkZg.jpg',
+  season_number: 1,
+  vote_average: 8.3,
 }

@@ -10,6 +10,8 @@ import type {
   TMDBObject,
   TVDetails,
   TVDetailsOptions,
+  TVSeasonDetails,
+  TVSeasonDetailsOptions,
   TVSummary,
   VideosResponse,
 } from '../types'
@@ -92,6 +94,22 @@ export class TVResource {
         language: options.language,
       }),
     })
+  }
+
+  seasonDetails<TAppend extends TMDBObject = TMDBObject>(
+    seriesId: number,
+    seasonNumber: number,
+    options: TVSeasonDetailsOptions = {},
+  ): Promise<TVSeasonDetails & TAppend> {
+    return this.#transport.get(
+      `/tv/${toId(seriesId, 'seriesId')}/season/${toId(seasonNumber, 'seasonNumber')}`,
+      {
+        query: withLanguage(this.#transport.defaults, {
+          append_to_response: toCommaList(options.appendToResponse),
+          language: options.language,
+        }),
+      },
+    )
   }
 }
 
