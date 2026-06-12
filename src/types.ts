@@ -405,8 +405,8 @@ export type ImageSize = BackdropSize | LogoSize | PosterSize | ProfileSize | Sti
  * (every helper is `(string & {})` permissive), but you will need to
  * add the literal to these constants to get autocomplete on it.
  */
-export const KNOWN_BACKDROP_SIZES = Object.freeze(['w300', 'w780', 'w1280', 'original'] as const)
-export const KNOWN_LOGO_SIZES = Object.freeze([
+export const KNOWN_BACKDROP_SIZES: readonly ['w300', 'w780', 'w1280', 'original'] = Object.freeze(['w300', 'w780', 'w1280', 'original'] as const)
+export const KNOWN_LOGO_SIZES: readonly ['w45', 'w92', 'w154', 'w185', 'w300', 'w500', 'original'] = Object.freeze([
   'w45',
   'w92',
   'w154',
@@ -415,7 +415,7 @@ export const KNOWN_LOGO_SIZES = Object.freeze([
   'w500',
   'original',
 ] as const)
-export const KNOWN_POSTER_SIZES = Object.freeze([
+export const KNOWN_POSTER_SIZES: readonly ['w92', 'w154', 'w185', 'w342', 'w500', 'w780', 'original'] = Object.freeze([
   'w92',
   'w154',
   'w185',
@@ -424,17 +424,8 @@ export const KNOWN_POSTER_SIZES = Object.freeze([
   'w780',
   'original',
 ] as const)
-export const KNOWN_PROFILE_SIZES = Object.freeze(['w45', 'w185', 'h632', 'original'] as const)
-export const KNOWN_STILL_SIZES = Object.freeze(['w92', 'w185', 'w300', 'original'] as const)
-
-/** Union of every documented image size. */
-export const KNOWN_IMAGE_SIZES = Object.freeze([
-  ...KNOWN_BACKDROP_SIZES,
-  ...KNOWN_LOGO_SIZES,
-  ...KNOWN_POSTER_SIZES,
-  ...KNOWN_PROFILE_SIZES,
-  ...KNOWN_STILL_SIZES,
-] as const)
+export const KNOWN_PROFILE_SIZES: readonly ['w45', 'w185', 'h632', 'original'] = Object.freeze(['w45', 'w185', 'h632', 'original'] as const)
+export const KNOWN_STILL_SIZES: readonly ['w92', 'w185', 'w300', 'original'] = Object.freeze(['w92', 'w185', 'w300', 'original'] as const)
 
 export type KnownBackdropSize = (typeof KNOWN_BACKDROP_SIZES)[number]
 export type KnownLogoSize = (typeof KNOWN_LOGO_SIZES)[number]
@@ -447,6 +438,15 @@ export type KnownImageSize =
   | KnownPosterSize
   | KnownProfileSize
   | KnownStillSize
+
+/** Union of every documented image size. */
+export const KNOWN_IMAGE_SIZES: readonly KnownImageSize[] = Object.freeze([
+  ...KNOWN_BACKDROP_SIZES,
+  ...KNOWN_LOGO_SIZES,
+  ...KNOWN_POSTER_SIZES,
+  ...KNOWN_PROFILE_SIZES,
+  ...KNOWN_STILL_SIZES,
+] as const)
 
 /** O(1) membership check backed by a Set. */
 const KNOWN_BACKDROP_SET: ReadonlySet<string> = new Set(KNOWN_BACKDROP_SIZES)
