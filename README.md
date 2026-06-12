@@ -4,23 +4,23 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/isaced/tmdb-kit/ci.yml?branch=main)](https://github.com/isaced/tmdb-kit/actions/workflows/ci.yml)
 [![license](https://img.shields.io/npm/l/tmdb-kit)](https://github.com/isaced/tmdb-kit/blob/main/LICENSE)
 [![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
-[![typescript](https://img.shields.io/badge/typescript-strict-blue)](https://www.typescriptlang.org)
 [![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](https://github.com/isaced/tmdb-kit/actions/workflows/ci.yml)
 
-A tiny, typed, zero-runtime-dependency TMDB SDK for Node.js, Bun, Deno, and edge runtimes.
+A minimal, fully typed TMDB SDK with zero runtime dependencies. Built for Node.js, Bun, Deno, and edge runtimes.
 
-This package intentionally does not generate code from OpenAPI. It ships a small hand-designed API surface for common TMDB workflows, plus a typed `request<T>()` escape hatch for endpoints that are not wrapped yet.
+`tmdb-kit` covers the most common TMDB workflows — movies, TV shows, search, trending, people, genres, and more — with a small, hand-crafted API designed for day-to-day use.
 
 ## Features
 
-- Zero runtime dependencies.
-- Built with tsdown and published as ESM + CommonJS.
-- Uses only Web standard APIs: `fetch`, `Headers`, `URL`, and `AbortSignal`.
-- Works in Node.js 18+, Bun, Deno, Cloudflare Workers, Vercel Edge, and other fetch-compatible runtimes.
-- Typed resources for movies, TV, search, trending, people, genres, configuration, and images.
-- Injectable `TMDBTransport` for tests, caching, and instrumentation — no need to mock `fetch` or `createTMDB` itself.
-- Image URL transforms (CDN / proxy / signed URLs) and search-result type guards.
-- High-coverage unit tests with mocked fetch; no real TMDB requests in tests.
+- **Zero dependencies** — nothing to audit, nothing to conflict.
+- **Universal runtime** — uses only `fetch`, `Headers`, `URL`, and `AbortSignal`. Works on Node.js 18+, Bun, Deno, Cloudflare Workers, Vercel Edge, and any fetch-compatible environment.
+- **Strict TypeScript** — full type safety with autocomplete for request options, response shapes, image sizes, and error handling.
+- **ESM + CommonJS** — dual-format output via tsdown, ready for any module system.
+- **Typed resources** — first-class methods for movies, TV, search, trending, people, genres, configuration, and images.
+- **Injectable transport** — swap the HTTP layer for tests, caching, or instrumentation without mocking `fetch`.
+- **Image helpers** — build CDN / proxy / signed URLs with per-request transform overrides.
+- **Search type guards** — narrow `search.multi()` results to movies, TV, or people with runtime-checked helpers.
+- **100% test coverage** — comprehensive unit tests with mocked fetch; no real TMDB requests.
 
 ## Install
 
@@ -64,13 +64,15 @@ const tmdb = createTMDB({ accessToken: Deno.env.get('TMDB_ACCESS_TOKEN')! })
 
 ## Authentication
 
-The recommended option is TMDB's API Read Access Token:
+The SDK targets the **TMDB v3 API** (`api.themoviedb.org/3`). Two authentication methods are supported:
+
+**API Read Access Token** (recommended) — works with both v3 and v4:
 
 ```ts
 createTMDB({ accessToken: 'tmdb-read-access-token' })
 ```
 
-The legacy v3 `api_key` query parameter is also supported:
+**Legacy v3 API key** — sent as an `api_key` query parameter:
 
 ```ts
 createTMDB({ apiKey: 'tmdb-v3-api-key' })
