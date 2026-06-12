@@ -88,6 +88,11 @@ export function toTimeWindow(value: TrendingTimeWindow): TrendingTimeWindow {
 
 export interface BuildImageUrlOptions {
   baseUrl?: string
+  /**
+   * Transform the resolved TMDB image URL before returning it. Use this to
+   * route requests through a CDN, image proxy, or to add signatures.
+   */
+  transform?: (url: string) => string
 }
 
 /**
@@ -105,8 +110,9 @@ export function buildImageUrl(
 
   const baseUrl = normalizeBaseUrl(options.baseUrl ?? DEFAULT_IMAGE_BASE_URL)
   const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  const url = `${baseUrl}/${size}${normalizedPath}`
 
-  return `${baseUrl}/${size}${normalizedPath}`
+  return options.transform ? options.transform(url) : url
 }
 
 export function normalizeBaseUrl(baseUrl: string): string {

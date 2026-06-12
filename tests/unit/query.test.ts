@@ -83,4 +83,25 @@ describe('query utilities', () => {
     expect(buildImageUrl(undefined, 'w342')).toBeNull()
     expect(buildImageUrl('   ', 'w342')).toBeNull()
   })
+
+  it('runs buildImageUrl through a transform callback so callers can route via proxies or CDNs', () => {
+    const proxy = (url: string) => url.replace('https://image.tmdb.org/t/p', 'https://img-proxy.example/tmdb')
+
+    expect(buildImageUrl('/poster.jpg', 'w500', { transform: proxy })).toBe(
+      'https://img-proxy.example/tmdb/w500/poster.jpg',
+    )
+
+    // Transform must not run for nullish inputs — the contract is still "return null".
+    expect(buildImageUrl(null, 'w500', { transform: proxy })).toBeNull()
+
+    // Transform must be invoked with the fully-resolved URL (size + path included).
+    const observed: string[] = []
+    buildImageUrl('/x.jpg', 'original', {
+      transform: (url) => {
+        observed.push(url)
+        return url
+      },
+    })
+    expect(observed).toEqual(['https://image.tmdb.org/t/p/original/x.jpg'])
+  })
 })

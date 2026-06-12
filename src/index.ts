@@ -1,6 +1,15 @@
 export { createTMDB, TMDBClient, type TMDBFactoryOptions } from './client'
 export { TMDBError, TMDBRequestError, TMDBResponseError } from './errors'
 export { buildImageUrl } from './query'
+export {
+  isMovie,
+  isMovieSearchResult,
+  isPerson,
+  isPersonSearchResult,
+  isTV,
+  isTVSearchResult,
+} from './search-guards'
+export type { ImageUrlTransform } from './resources/images'
 
 export type {
   FetchLike,
@@ -8,6 +17,7 @@ export type {
   TMDBApiKeyAuth,
   TMDBAuth,
   TMDBClientOptions,
+  TMDBImagesOptions,
   TMDBRequestOptions,
   TMDBTransport,
 } from './http'
@@ -39,6 +49,7 @@ export type {
   MovieDetailsOptions,
   MovieSearchOptions,
   MovieSearchResult,
+  MovieMultiResult,
   MovieSummary,
   MultiSearchOptions,
   Network,
@@ -47,6 +58,7 @@ export type {
   PersonKnownFor,
   PersonKnownForMovie,
   PersonKnownForTV,
+  PersonMultiResult,
   PersonSearchResult,
   PersonSummary,
   PosterSize,
@@ -55,6 +67,7 @@ export type {
   ProfileSize,
   RegionCode,
   SearchMultiResult,
+  TVMultiResult,
   EpisodeGuestStar,
   EpisodeSummary,
   SeasonSummary,

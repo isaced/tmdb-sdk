@@ -7,7 +7,10 @@ import {
   type QueryDefaults,
   type QueryParams,
 } from './query'
+import type { ImageUrlTransform } from './resources/images'
 import type { JsonValue, LanguageCode, RegionCode } from './types'
+
+export type { ImageUrlTransform }
 
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 
@@ -29,6 +32,16 @@ export interface TMDBClientDefaults extends QueryDefaults {
   imageBaseUrl: string
 }
 
+export interface TMDBImagesOptions {
+  /**
+   * Default transform applied to every URL produced by the ImagesHelper.
+   * Use this to route TMDB image requests through a CDN, image proxy, or
+   * to add signed query parameters. Individual calls can still override it
+   * via ImagesHelper.url(path, size, { transform }).
+   */
+  transform?: ImageUrlTransform
+}
+
 export type TMDBClientOptions = TMDBAuth & {
   /** Defaults to https://api.themoviedb.org/3. Useful for tests or proxies. */
   baseUrl?: string
@@ -40,6 +53,8 @@ export type TMDBClientOptions = TMDBAuth & {
   defaultRegion?: RegionCode
   /** Custom image host. Defaults to https://image.tmdb.org/t/p. */
   imageBaseUrl?: string
+  /** Image-helper configuration: host overrides and URL transforms. */
+  images?: TMDBImagesOptions
   /** Additional headers merged into every request before authentication is applied. */
   headers?: HeadersInit
 }
@@ -57,6 +72,7 @@ export interface TMDBTransport {
 
 export class TMDBHttpClient implements TMDBTransport {
   readonly defaults: TMDBClientDefaults
+  readonly imageTransform: ImageUrlTransform | undefined
 
   readonly #apiKey: string | undefined
   readonly #accessToken: string | undefined
@@ -82,6 +98,7 @@ export class TMDBHttpClient implements TMDBTransport {
       language: options.defaultLanguage,
       region: options.defaultRegion,
     }
+    this.imageTransform = options.images?.transform
   }
 
   async get<T>(path: string, options: TMDBRequestOptions = {}): Promise<T> {

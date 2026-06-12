@@ -257,6 +257,11 @@ export type SearchMultiResult =
   | (TVSummary & { media_type: 'tv' })
   | (PersonSummary & { media_type: 'person' })
 
+/** A single multi-search result narrowed to a specific media type. */
+export type MovieMultiResult = MovieSummary & { media_type: 'movie' }
+export type TVMultiResult = TVSummary & { media_type: 'tv' }
+export type PersonMultiResult = PersonSummary & { media_type: 'person' }
+
 export type TrendingResult = SearchMultiResult
 
 export interface CreditCastMember {
@@ -447,6 +452,12 @@ export interface TVSearchOptions extends Omit<ListOptions, 'region'> {
 
 export interface MultiSearchOptions extends Omit<ListOptions, 'region'> {
   includeAdult?: boolean
+  /**
+   * Media types to exclude from a `search.multi()` response. Filtering is
+   * performed client-side because the TMDB multi-search endpoint does not
+   * support a server-side media_type filter.
+   */
+  exclude?: ReadonlyArray<MediaType>
 }
 
 export interface ImageQueryOptions extends LanguageOptions {

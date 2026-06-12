@@ -36,10 +36,24 @@ export class SearchResource {
     })
   }
 
-  multi(query: string, options: MultiSearchOptions = {}): Promise<PagedResponse<SearchMultiResult>> {
-    return this.#transport.get('/search/multi', {
+  async multi(
+    query: string,
+    options: MultiSearchOptions = {},
+  ): Promise<PagedResponse<SearchMultiResult>> {
+    const response = await this.#transport.get<PagedResponse<SearchMultiResult>>('/search/multi', {
       query: commonSearchQuery(this.#transport, query, options),
     })
+
+    const excluded = options.exclude
+    if (excluded === undefined || excluded.length === 0) {
+      return response
+    }
+
+    const excludedSet = new Set<string>(excluded)
+    return {
+      ...response,
+      results: response.results.filter((result) => !excludedSet.has(result.media_type)),
+    }
   }
 }
 
