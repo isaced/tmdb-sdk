@@ -2,6 +2,11 @@ import type { TMDBTransport } from '../http'
 import { toId, withLanguage, type QueryParams } from '../query'
 import type { LanguageOptions, ListOptions, PagedResponse, PersonDetails, PersonSummary } from '../types'
 
+/**
+ * Access TMDB person (actor, director, etc.) endpoints.
+ *
+ * Obtained via `client.people`.
+ */
 export class PeopleResource {
   readonly #transport: TMDBTransport
 
@@ -24,6 +29,7 @@ export class PeopleResource {
   }
 }
 
+/** Build query parameters for person list endpoints. */
 function peopleListQuery(
   transport: TMDBTransport,
   options: Omit<ListOptions, 'region'>,

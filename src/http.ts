@@ -12,6 +12,10 @@ import type { JsonValue, LanguageCode, RegionCode } from './types'
 
 export type { ImageUrlTransform }
 
+/**
+ * A minimal fetch-like function signature. Any runtime's native `fetch`
+ * or a test double conforming to this shape can be used.
+ */
 export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
 
 export interface TMDBAccessTokenAuth {
@@ -28,6 +32,7 @@ export interface TMDBApiKeyAuth {
 
 export type TMDBAuth = TMDBAccessTokenAuth | TMDBApiKeyAuth
 
+/** Internal defaults resolved during client construction. */
 export interface TMDBClientDefaults extends QueryDefaults {
   imageBaseUrl: string
 }
@@ -59,17 +64,32 @@ export type TMDBClientOptions = TMDBAuth & {
   headers?: HeadersInit
 }
 
+/** Per-request overrides applied when making a single API call. */
 export interface TMDBRequestOptions {
   headers?: HeadersInit
   query?: QueryParams
   signal?: AbortSignal
 }
 
+/**
+ * Transport abstraction for making HTTP requests to the TMDB API.
+ *
+ * The built-in {@link TMDBHttpClient} implements this interface. You can
+ * provide a custom implementation via {@link TMDBFactoryOptions.transport}
+ * for testing, caching, or instrumentation.
+ */
 export interface TMDBTransport {
   readonly defaults: TMDBClientDefaults
   get<T>(path: string, options?: TMDBRequestOptions): Promise<T>
 }
 
+/**
+ * Built-in HTTP transport that uses the Fetch API.
+ *
+ * Handles authentication (API key or access token), URL construction,
+ * request headers, and response parsing. Use the factory function
+ * {@link createTMDB} instead of instantiating this directly.
+ */
 export class TMDBHttpClient implements TMDBTransport {
   readonly defaults: TMDBClientDefaults
   readonly imageTransform: ImageUrlTransform | undefined
@@ -177,6 +197,13 @@ export class TMDBHttpClient implements TMDBTransport {
   }
 }
 
+/**
+ * Read and parse a JSON response body.
+ *
+ * Returns `undefined` for empty responses. If the body is not valid JSON,
+ * the raw text string is returned as-is (TMDB occasionally returns plain
+ * text for certain error conditions).
+ */
 async function readJson(response: Response): Promise<JsonValue | undefined> {
   const text = await response.text()
 
@@ -191,6 +218,10 @@ async function readJson(response: Response): Promise<JsonValue | undefined> {
   }
 }
 
+/**
+ * Normalize a secret value by trimming whitespace and treating empty
+ * strings as undefined (not provided).
+ */
 function normalizeSecret(value: string | undefined): string | undefined {
   const secret = value?.trim()
   return secret === '' ? undefined : secret

@@ -13,6 +13,11 @@ import type {
   VideosResponse,
 } from '../types'
 
+/**
+ * Access TMDB movie endpoints (popular, top-rated, details, credits, etc.).
+ *
+ * Obtained via `client.movies`.
+ */
 export class MoviesResource {
   readonly #transport: TMDBTransport
 
@@ -94,6 +99,7 @@ export class MoviesResource {
   }
 }
 
+/** Build query parameters for movie list endpoints. */
 function movieListQuery(transport: TMDBTransport, options: ListOptions): QueryParams {
   return withListDefaults(transport.defaults, {
     language: options.language,

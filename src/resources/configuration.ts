@@ -1,6 +1,11 @@
 import type { TMDBTransport } from '../http'
 import type { Configuration, Country, JobDepartment, Language, Timezone } from '../types'
 
+/**
+ * Access TMDB configuration data (image sizes, countries, languages, etc.).
+ *
+ * Obtained via `client.configuration`.
+ */
 export class ConfigurationResource {
   readonly #transport: TMDBTransport
 

@@ -1,11 +1,13 @@
 import type { JsonValue } from './types'
 
+/** Raw TMDB error response body structure. */
 export interface TMDBErrorResponseBody {
   success?: boolean
   status_code?: number
   status_message?: string
 }
 
+/** Options for constructing a {@link TMDBResponseError} or its subclasses. */
 export interface TMDBResponseErrorOptions {
   body: JsonValue | undefined
   headers: Headers
@@ -104,6 +106,13 @@ export class TMDBRateLimitError extends TMDBResponseError {
   }
 }
 
+/**
+ * Create the appropriate error instance for a non-2xx TMDB response.
+ *
+ * Returns a {@link TMDBRateLimitError} when the status is 429, otherwise
+ * a generic {@link TMDBResponseError}. The error message is extracted from
+ * the TMDB `status_message` field when available.
+ */
 export function createResponseError(
   options: TMDBResponseErrorOptions,
 ): TMDBResponseError {
@@ -149,6 +158,7 @@ export function parseRetryAfter(value: string | null | undefined): number {
   return 1
 }
 
+/** Check if a value has the shape of a TMDB error response body. */
 function isErrorResponseBody(value: unknown): value is TMDBErrorResponseBody {
   return typeof value === 'object' && value !== null
 }

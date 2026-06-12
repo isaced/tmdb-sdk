@@ -11,11 +11,19 @@ export interface JsonObject {
 /** Escape hatch for append_to_response payloads and future TMDB fields. */
 export type TMDBObject = Record<string, unknown>
 
+/** Date string in TMDB format (typically `YYYY-MM-DD`). */
 export type TMDBDateString = string
+
+/** ISO 639-1 language code (e.g. `"en"`, `"zh"`). */
 export type LanguageCode = string
+
+/** ISO 3166-1 country/region code (e.g. `"US"`, `"CN"`). */
 export type RegionCode = string
 
+/** Supported media types for multi-search results. */
 export type MediaType = 'movie' | 'tv' | 'person'
+
+/** Time window for trending endpoints: `"day"` or `"week"`. */
 export type TrendingTimeWindow = 'day' | 'week'
 
 export interface PagedResponse<T> {

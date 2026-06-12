@@ -10,6 +10,11 @@ import type {
   TVSummary,
 } from '../types'
 
+/**
+ * Access TMDB trending content (movies, TV, people) for day/week windows.
+ *
+ * Obtained via `client.trending`.
+ */
 export class TrendingResource {
   readonly #transport: TMDBTransport
 

@@ -16,6 +16,11 @@ import type {
   VideosResponse,
 } from '../types'
 
+/**
+ * Access TMDB TV show endpoints (popular, top-rated, details, seasons, etc.).
+ *
+ * Obtained via `client.tv`.
+ */
 export class TVResource {
   readonly #transport: TMDBTransport
 
@@ -113,6 +118,7 @@ export class TVResource {
   }
 }
 
+/** Build query parameters for TV list endpoints. */
 function tvListQuery(
   transport: TMDBTransport,
   options: Omit<ListOptions, 'region'>,

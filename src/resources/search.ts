@@ -11,6 +11,11 @@ import type {
   TVSearchResult,
 } from '../types'
 
+/**
+ * Search TMDB for movies, TV shows, people, or all media types.
+ *
+ * Obtained via `client.search`.
+ */
 export class SearchResource {
   readonly #transport: TMDBTransport
 
@@ -57,6 +62,7 @@ export class SearchResource {
   }
 }
 
+/** Build query parameters for movie search. */
 function movieSearchQuery(
   transport: TMDBTransport,
   query: string,
@@ -73,6 +79,7 @@ function movieSearchQuery(
   })
 }
 
+/** Build query parameters for TV search. */
 function tvSearchQuery(
   transport: TMDBTransport,
   query: string,
@@ -88,6 +95,7 @@ function tvSearchQuery(
   })
 }
 
+/** Build query parameters for person and multi-search. */
 function commonSearchQuery(
   transport: TMDBTransport,
   query: string,

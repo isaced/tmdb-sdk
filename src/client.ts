@@ -60,11 +60,34 @@ export class TMDBClient {
     this.tv = new TVResource(this.#transport)
   }
 
+  /**
+   * Make a raw GET request to any TMDB endpoint.
+   *
+   * This is an escape hatch for endpoints not covered by the typed resource
+   * helpers. The `path` should be relative to the API base URL (e.g.
+   * `/movie/{id}/credits`). Response is parsed as JSON and cast to `T`.
+   *
+   * @param path - API path relative to the base URL (e.g. `/movie/123`)
+   * @param options - Optional request-level overrides (headers, query, signal)
+   * @returns Parsed JSON response typed as `T`
+   */
   request<T>(path: string, options?: TMDBRequestOptions): Promise<T> {
     return this.#transport.get<T>(path, options)
   }
 }
 
+/**
+ * Create a new {@link TMDBClient} instance.
+ *
+ * @example
+ * ```ts
+ * const tmdb = createTMDB({ accessToken: 'YOUR_TOKEN' })
+ * const { results } = await tmdb.search.movies('Inception')
+ * ```
+ *
+ * @param options - Authentication and configuration options
+ * @returns A configured TMDBClient ready to make API calls
+ */
 export function createTMDB(options: TMDBFactoryOptions): TMDBClient {
   return new TMDBClient(options)
 }
