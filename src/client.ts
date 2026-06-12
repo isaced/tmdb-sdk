@@ -1,4 +1,4 @@
-import { TMDBHttpClient, type TMDBClientOptions, type TMDBRequestOptions } from './http'
+import { TMDBHttpClient, type TMDBClientOptions, type TMDBRequestOptions, type TMDBTransport } from './http'
 import { ConfigurationResource } from './resources/configuration'
 import { GenresResource } from './resources/genres'
 import { ImagesHelper } from './resources/images'
@@ -7,6 +7,17 @@ import { PeopleResource } from './resources/people'
 import { SearchResource } from './resources/search'
 import { TrendingResource } from './resources/trending'
 import { TVResource } from './resources/tv'
+
+/**
+ * Options accepted by {@link createTMDB} and the {@link TMDBClient} constructor.
+ *
+ * Extends {@link TMDBClientOptions} with an optional {@link TMDBTransport} so
+ * callers can plug in a custom transport (typically for tests, caching, or
+ * instrumentation) without having to mock `fetch` or the factory itself.
+ */
+export type TMDBFactoryOptions = TMDBClientOptions & {
+  transport?: TMDBTransport
+}
 
 /**
  * Main SDK entry point.
@@ -25,26 +36,27 @@ export class TMDBClient {
   readonly trending: TrendingResource
   readonly tv: TVResource
 
-  readonly #http: TMDBHttpClient
+  readonly #transport: TMDBTransport
 
-  constructor(options: TMDBClientOptions) {
-    this.#http = new TMDBHttpClient(options)
+  constructor(options: TMDBFactoryOptions) {
+    const { transport, ...httpOptions } = options
+    this.#transport = transport ?? new TMDBHttpClient(httpOptions)
 
-    this.configuration = new ConfigurationResource(this.#http)
-    this.genres = new GenresResource(this.#http)
-    this.images = new ImagesHelper(this.#http)
-    this.movies = new MoviesResource(this.#http)
-    this.people = new PeopleResource(this.#http)
-    this.search = new SearchResource(this.#http)
-    this.trending = new TrendingResource(this.#http)
-    this.tv = new TVResource(this.#http)
+    this.configuration = new ConfigurationResource(this.#transport)
+    this.genres = new GenresResource(this.#transport)
+    this.images = new ImagesHelper(this.#transport)
+    this.movies = new MoviesResource(this.#transport)
+    this.people = new PeopleResource(this.#transport)
+    this.search = new SearchResource(this.#transport)
+    this.trending = new TrendingResource(this.#transport)
+    this.tv = new TVResource(this.#transport)
   }
 
   request<T>(path: string, options?: TMDBRequestOptions): Promise<T> {
-    return this.#http.get<T>(path, options)
+    return this.#transport.get<T>(path, options)
   }
 }
 
-export function createTMDB(options: TMDBClientOptions): TMDBClient {
+export function createTMDB(options: TMDBFactoryOptions): TMDBClient {
   return new TMDBClient(options)
 }

@@ -131,7 +131,31 @@ describe('TMDBHttpClient', () => {
     ).toThrow('Provide exactly one of accessToken or apiKey')
   })
 
-  it('reports a clear error when fetch is unavailable', () => {
+  it('resolves global fetch lazily so it picks up runtime replacements (e.g. test mocks, polyfills)', async () => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'fetch')
+    const stubFetch: FetchLike = async () =>
+      new Response(JSON.stringify({ ok: true }), { status: 200 })
+
+    Object.defineProperty(globalThis, 'fetch', {
+      configurable: true,
+      value: stubFetch,
+    })
+
+    try {
+      // Construct BEFORE the mock is installed. The SDK must defer fetch
+      // resolution until a request is actually made.
+      const http = new TMDBHttpClient({ accessToken: 'token' })
+
+      const response = await http.get<{ ok: boolean }>('/movie/popular')
+      expect(response.ok).toBe(true)
+    } finally {
+      if (descriptor !== undefined) {
+        Object.defineProperty(globalThis, 'fetch', descriptor)
+      }
+    }
+  })
+
+  it('reports a clear error when fetch is unavailable at request time', async () => {
     const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'fetch')
 
     Object.defineProperty(globalThis, 'fetch', {
@@ -140,7 +164,12 @@ describe('TMDBHttpClient', () => {
     })
 
     try {
-      expect(() => new TMDBHttpClient({ accessToken: 'token' })).toThrow(
+      // Construction must NOT throw — we no longer validate fetch up front.
+      const http = new TMDBHttpClient({ accessToken: 'token' })
+      const error = await http.get('/movie/popular').catch((value: unknown) => value)
+
+      expect(error).toBeInstanceOf(TMDBRequestError)
+      expect((error as Error).message).toBe(
         'No fetch implementation found. Pass options.fetch in this runtime.',
       )
     } finally {

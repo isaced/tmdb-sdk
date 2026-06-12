@@ -9,15 +9,20 @@ if (typeof process.loadEnvFile === 'function') {
   }
 }
 
-export const accessToken = process.env.TMDB_ACCESS_TOKEN?.trim()
+const envAccessToken = process.env.TMDB_ACCESS_TOKEN?.trim()
 export const apiEndpoint = process.env.TMDB_API_ENDPOINT?.trim()
 
-if (!accessToken) {
+if (!envAccessToken) {
   throw new Error(
     'Missing TMDB_ACCESS_TOKEN environment variable. ' +
       'Please export it or add it to your .env file before running integration tests.',
   )
 }
+
+// Narrowed to a plain string after the guard above. We re-export it so
+// individual integration suites can reference the same token without having
+// to re-validate the environment.
+export const accessToken: string = envAccessToken
 
 export function createRealTMDB(): TMDBClient {
   return createTMDB({

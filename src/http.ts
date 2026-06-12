@@ -61,7 +61,7 @@ export class TMDBHttpClient implements TMDBTransport {
   readonly #apiKey: string | undefined
   readonly #accessToken: string | undefined
   readonly #baseUrl: string
-  readonly #fetch: FetchLike
+  readonly #fetch: FetchLike | undefined
   readonly #headers: HeadersInit | undefined
 
   constructor(options: TMDBClientOptions) {
@@ -72,16 +72,10 @@ export class TMDBHttpClient implements TMDBTransport {
       throw new TMDBRequestError('Provide exactly one of accessToken or apiKey')
     }
 
-    const fetchImpl = options.fetch ?? globalThis.fetch?.bind(globalThis)
-
-    if (typeof fetchImpl !== 'function') {
-      throw new TMDBRequestError('No fetch implementation found. Pass options.fetch in this runtime.')
-    }
-
     this.#accessToken = accessToken
     this.#apiKey = apiKey
     this.#baseUrl = normalizeBaseUrl(options.baseUrl ?? DEFAULT_API_BASE_URL)
-    this.#fetch = fetchImpl
+    this.#fetch = options.fetch
     this.#headers = options.headers
     this.defaults = {
       imageBaseUrl: normalizeBaseUrl(options.imageBaseUrl ?? DEFAULT_IMAGE_BASE_URL),
@@ -93,11 +87,12 @@ export class TMDBHttpClient implements TMDBTransport {
   async get<T>(path: string, options: TMDBRequestOptions = {}): Promise<T> {
     const url = this.#createUrl(path, options.query ?? {})
     const headers = this.#createHeaders(options.headers)
+    const fetchImpl = this.#resolveFetch()
 
     let response: Response
 
     try {
-      response = await this.#fetch(url, {
+      response = await fetchImpl(url, {
         headers,
         method: 'GET',
         signal: options.signal,
@@ -119,6 +114,20 @@ export class TMDBHttpClient implements TMDBTransport {
     }
 
     return body as T
+  }
+
+  #resolveFetch(): FetchLike {
+    if (this.#fetch !== undefined) {
+      return this.#fetch
+    }
+
+    const globalFetch = globalThis.fetch
+
+    if (typeof globalFetch !== 'function') {
+      throw new TMDBRequestError('No fetch implementation found. Pass options.fetch in this runtime.')
+    }
+
+    return globalFetch.bind(globalThis)
   }
 
   #createHeaders(headersInit: HeadersInit | undefined): Headers {

@@ -11,7 +11,7 @@ describe('Client request() escape hatch (integration)', () => {
   })
 
   it('can query collections', async () => {
-    const result = await tmdb.request('collection/10') // Star Wars Collection
+    const result = await tmdb.request<{ id: number }>('collection/10') // Star Wars Collection
     expect(result).toBeDefined()
     expect(result.id).toBe(10)
   })

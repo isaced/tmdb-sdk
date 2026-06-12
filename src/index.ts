@@ -1,4 +1,4 @@
-export { createTMDB, TMDBClient } from './client'
+export { createTMDB, TMDBClient, type TMDBFactoryOptions } from './client'
 export { TMDBError, TMDBRequestError, TMDBResponseError } from './errors'
 export { buildImageUrl } from './query'
 
@@ -9,6 +9,7 @@ export type {
   TMDBAuth,
   TMDBClientOptions,
   TMDBRequestOptions,
+  TMDBTransport,
 } from './http'
 
 export type {
