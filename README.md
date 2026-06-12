@@ -150,6 +150,7 @@ tmdb.tv.images(1399)
 tmdb.tv.recommendations(1399)
 tmdb.tv.similar(1399)
 tmdb.tv.videos(1399)
+tmdb.tv.seasonDetails(1399, 1)
 
 tmdb.search.movies('Dune')
 tmdb.search.tv('Dark')
